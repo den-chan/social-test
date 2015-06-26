@@ -1,0 +1,125 @@
+html, body {
+  margin: 0;
+  overflow: hidden;
+  font-family: proxima-nova, serif
+}
+
+main > * {
+  display: inline-block;
+  position: absolute;
+  height: 100%
+}
+
+#peers {
+  height: 100%;
+  width: 30%;
+  background: chartreuse;
+  left: 0
+}
+
+#peers > :first-child {
+  margin: .5em .8em 0;
+}
+
+#peers > * {
+  margin: 0.3em 1.3em
+}
+
+#peers > :not(:first-child) {
+  cursor: pointer
+}
+
+#peers .handle {
+  padding: 0.3em 0.5em;
+  outline: 0
+}
+
+#peers .handle:focus {
+  cursor: text;
+  background: #fff
+}
+
+.handle > input {
+  display: none;
+}
+
+#display {
+  right: 0;
+  width: 70%;
+}
+
+#display > * { 
+  display: none
+}
+
+#display > .focus {
+  display: block
+}
+
+.display {
+  height: calc(100% - 2em);
+  overflow: auto
+}
+
+.input {
+  width: calc(100% - 1em);
+  border: 0;
+  outline: 0;
+  background: #eee;
+  height: 1em;
+  padding: .5em;
+  position: absolute;
+  bottom: 0;
+  font: 12pt proxima-nova
+}
+
+.stamp {
+  display: none
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: freight-sans-pro;
+}
+
+p {
+  margin: .3em .5em
+}
+
+.remotemsg {
+  background: #fff;
+  padding: .5em 1.2em;
+  border-radius: 1.5em;
+  border: 1px solid #bbb;
+  margin-left: 2em;
+}
+.localmsg {
+  background: #dfb;
+  padding: .5em 1.2em;
+  border-radius: 1.5em;
+  margin-right: 2em;
+}
+
+.self:hover:after {
+  content: "self";
+  background: #e91404;
+  border-radius: 1em;
+  padding: .2em .4em;
+  color: #fff;
+  font-weight: bold;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  cursor: default
+}
+:not(.self) > span > .icon {
+  font-family: icon-font;
+  font-style: normal;
+  text-shadow: -1.4px -1.4px 0 #fff, 1.4px -1.4px 0 #fff, -1.4px 1.4px 0 #fff, 1.4px 1.4px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff;
+  -moz-user-select: none;
+  -webkit-user-select: none
+}
+:not(.self):hover > span > .icon.minus:after {
+  content: "a"
+}
+:not(.self):hover > span > .icon.plus:after {
+  content: "b"
+}
