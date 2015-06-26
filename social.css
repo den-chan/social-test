@@ -39,6 +39,10 @@ main > * {
   background: #fff
 }
 
+.open .handle {
+  font-weight: bold;
+}
+
 .handle > input {
   display: none;
 }
@@ -99,7 +103,7 @@ p {
   margin-right: 2em;
 }
 
-.self:hover:after {
+.self:hover > span > .actions:after {
   content: "self";
   background: #e91404;
   border-radius: 1em;
@@ -117,9 +121,12 @@ p {
   -moz-user-select: none;
   -webkit-user-select: none
 }
-:not(.self):hover > span > .icon.minus:after {
-  content: "a"
-}
-:not(.self):hover > span > .icon.plus:after {
-  content: "b"
+:hover > .icon.minus:after { content: "a" }
+:hover > .icon.plus:after { content: "b" }
+.icon.new-msg:after { content: "c" }
+.icon.no-new-msg:after { content: "d" }
+.icon.chat:after { content: "e" }
+
+#peers .handle:focus + .actions:after {
+  margin-left: .5em
 }

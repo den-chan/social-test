@@ -15,8 +15,12 @@ function ws(uri) {
           if (e.target.classList.contains("plus")) rtc(id);
           else if (e.target.classList.contains("minus")) peers[id].connection.close()
         });
+        $("#peers > .peer-" + id + " .state").addEventListener("click", function (e) {
+          if (!e.target.classList.contains("chat")) swapWindow(id)
+        })
         if (id === selfid) return $("#peers > .peer-" + id).classList.add("self");
         peers[id] = {};
+        $("#peers > .peer-" + id + " .actions").classList.add("plus");
         $("#display").appendChild($("#peer-window > *").cloneNode(true)).setAttribute("class", "peer-" + id);
         input(id).addEventListener("keyup", function (e) {
           if (e.which === 13) {
@@ -43,6 +47,7 @@ function rtc (id, odesc) {
       peers[id].connection.onicecandidate = function (e) {
         if (e.candidate === null) ws.send( JSON.stringify(merge(this.localDescription.toJSON(), { id: id })) )
       };
+      peers[id].connection.oniceconnectionstatechange = function (e) { if (e.target.iceConnectionState === "closed") closeConn(id) }
 //    pc.onaddstream = function (e) { remotevideo.src = window.URL.createObjectURL(e.stream) };
     if (odesc) {
       peers[id].connection.ondatachannel = function (e) { peers[id].dataChannel = e.channel || e; start(id) };
@@ -58,15 +63,20 @@ function rtc (id, odesc) {
   function start(id) {
     peers[id].dataChannel.onopen = function () {
       $("#peers > .peer-" + id).classList.add("open");
-      $("#peers > .peer-" + id + " .actions").classList.remove("plus")
+      $("#peers > .peer-" + id + " .actions").classList.remove("plus");
       $("#peers > .peer-" + id + " .actions").classList.add("minus");
+      if ($("#display > .focus")) return swapWindow(id);
+      $("#peers > .peer-" + id + " .state").classList.add("chat");
       $("#display > .peer-" + id).classList.add("focus")
     };
     peers[id].dataChannel.onmessage = function (e) {
       var data = JSON.parse(e.data);
       write(data.id, data.msg, "remote")
-    };
-    peers[id].dataChannel.onclose = function () {};
+      if ($("#peers > .peer-" + id + ".open")) {
+        $("#peers > .peer-" + id + " .state").classList.remove("no-new-msg");
+        $("#peers > .peer-" + id + " .state").classList.add("new-msg");
+      }
+    }
   }
 }
 //  HTML escape utility
@@ -92,6 +102,20 @@ function merge (obj1, obj2) {
   return obj1
 }
 function $ (q) { return document.querySelector(q) }
+function closeConn (id) {
+  $("#peers > .peer-" + id + " .actions").classList.remove("minus");
+  $("#peers > .peer-" + id + " .actions").classList.add("plus");
+  $("#peers > .peer-" + id).classList.remove("open");
+  $("#peers > .peer-" + id + " .state").classList.remove("chat");
+  $("#display > .peer-" + id).classList.remove("focus")
+}
+function swapWindow (id) {
+  $("#peers .state.chat").classList.add("no-new-msg");
+  $("#peers .state.chat").classList.remove("chat");
+  $("#display > .focus").classList.remove("focus");
+  $("#peers > .peer-" + id + " .state").classList.add("chat");
+  $("#display > .peer-" + id).classList.add("focus")
+}
 
 //Variables
 var
@@ -104,7 +128,7 @@ RTCSessionDescription = window.RTCSessionDescription || window.webkitRTCSessionD
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
 //Event listeners
-document.addEventListener("beforeunload", function () { ws.close() });
+window.addEventListener("beforeunload", function () { ws.close() });
 window.addEventListener("resize", function() {
   return new Promise(function (resolve) {
     requestAnimationFrame(function () { resolve(); window.dispatchEvent(new CustomEvent("opresize")) })
