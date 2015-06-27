@@ -49,10 +49,10 @@ main > * {
 
 #display {
   right: 0;
-  width: 70%;
+  width: 70%
 }
 
-#display > * { 
+#display > div, #display:not(.wait) > .spinner { 
   display: none
 }
 
@@ -114,18 +114,39 @@ p {
   -webkit-user-select: none;
   cursor: default
 }
-:not(.self) > span > .icon {
+
+:not(.self) > span > .icon,
+#display > .icon {
   font-family: icon-font;
   font-style: normal;
   text-shadow: -1.4px -1.4px 0 #fff, 1.4px -1.4px 0 #fff, -1.4px 1.4px 0 #fff, 1.4px 1.4px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff;
   -moz-user-select: none;
   -webkit-user-select: none
 }
+
 :hover > .icon.minus:after { content: "a" }
 :hover > .icon.plus:after { content: "b" }
 .icon.new-msg:after { content: "c" }
 .icon.no-new-msg:after { content: "d" }
 .icon.chat:after { content: "e" }
+.icon.spinner {
+  animation: spin .7s infinite linear;
+  -webkit-animation: spin .7s infinite linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0) }
+  100% { transform: rotate(360deg) }
+}
+
+#display.wait {
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+#display.wait > .spinner {
+  display: block
+}
 
 #peers .handle:focus + .actions:after {
   margin-left: .5em
